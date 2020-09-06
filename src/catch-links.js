@@ -115,7 +115,13 @@ export const routeThroughBrowserOrApp = (
 
   if (navigationWasHandledElsewhere(event)) return true
 
-  const clickedAnchor = findClosestAnchor(event.target)
+  // IE11 does not support event.composedPath.
+  // However as the shadow dom is turned into light dom by polyfills, we instead use event.target.
+  const clickedAnchor = findClosestAnchor(
+    (event.composedPath && event.composedPath()[0]) 
+    || event.target
+  )
+
   if (clickedAnchor == null) return true
 
   if (authorIsForcingNavigation(clickedAnchor)) return true
